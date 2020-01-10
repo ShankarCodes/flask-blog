@@ -1,5 +1,7 @@
 from flask import render_template
 from flask import Response
+from flask import redirect
+from flask import flash
 from .app import app
 from .forms import LoginForm
 
@@ -25,4 +27,7 @@ def home_page():
 @app.route('/login',methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        flash(f"Login Requested for {form.username.data} Password:{form.password.data} Remember Me:{form.remember_me.data}")
+        redirect('/index')
     return render_template('login.html',form=form,user=sampleuser)
