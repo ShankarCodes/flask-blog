@@ -34,11 +34,16 @@
                 <a class="nav-link" href="/index" tabindex="-1" aria-disabled="true">Home</a>
             </li>
             <li class="nav-item active">
-                    <a class="nav-link" href="/login" tabindex="-1" aria-disabled="true">Login</a>
+                    <a class="nav-link" href='/login' tabindex="-1" aria-disabled="true">Login</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href='/logout' tabindex="-1" aria-disabled="true">Logout</a>
                 </li>
         </ul>
         <ul class='nav navbar-nav navbar-right navbar-text'>
-            <li>Hi {{user.username}}</li>
+           {%if current_user.username%}
+            <li>Hi {{current_user.username}}</li>
+           {%endif%}
         </ul>
 
     </nav>
