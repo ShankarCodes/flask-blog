@@ -87,7 +87,7 @@ def forgot_password():
     if form.validate_on_submit():
         usr = User.query.get(form.username.data)
         if usr is not  None:
-            token = usr.get_password_reset_token(60)
+            token = usr.get_password_reset_token(2*60*60)
             usr.save()
             url = f"{request.base_url}/passwordreset?token={token}"
             resp = tpl.render(username=usr.username,reset_url=url)
@@ -110,7 +110,6 @@ def reset_password():
         usr = User.query.get(decoded['username'])
         print(usr)
         su = usr.check_password_reset_token(token)
-        usr.last_reset_password_token = token
         usr.save()
         if su == 'NV':
             return render_template('invalid_reset_password.html',msg="Verifcation failed")
