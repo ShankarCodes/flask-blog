@@ -33,12 +33,21 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/index" tabindex="-1" aria-disabled="true">Home</a>
             </li>
-            <li class="nav-item active">
-                    <a class="nav-link" href='/login' tabindex="-1" aria-disabled="true">Login</a>
-                </li>
+			
+            
+				{%if current_user.is_authenticated%}
                 <li class="nav-item active">
                     <a class="nav-link" href='/logout' tabindex="-1" aria-disabled="true">Logout</a>
                 </li>
+				{%else%}
+				<li class="nav-item active">
+                    <a class="nav-link" href='/login' tabindex="-1" aria-disabled="true">Login</a>
+                </li>
+				<li class="nav-item active">
+                    <a class="nav-link" href='{{url_for("register")}}' tabindex="-1" aria-disabled="true">Register</a>
+                </li>
+				{%endif%}
+				
         </ul>
         <ul class='nav navbar-nav navbar-right navbar-text'>
            {%if current_user.username%}
