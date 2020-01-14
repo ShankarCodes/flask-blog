@@ -2,6 +2,7 @@ from flask import render_template
 from flask import Response
 from flask import redirect
 from flask import flash,url_for
+from flask import request
 from .app import app
 from .forms import LoginForm,RegisterForm,ResetPasswordForm,ForgotPasswordForm
 from .models import User
@@ -59,13 +60,17 @@ def register():
 def forgot_password():
     form = ForgotPasswordForm()
     if form.validate_on_submit():
+        usr = User.query.get(form.username.data)
+        if usr is not  None:
+            token = usr.get_password_reset_token(60)
+            print(f"{request.base_url}/passwordreset?token={token.decode('utf-8')}")
         return render_template('mail_sent_forgot_password.html')
     return render_template('forgot_password.html',form=form)
 
-@app.route('/passwordreset')
+@app.route('/forgotpassword/passwordreset')
 def reset_password():
     form = ResetPasswordForm()
-    
+    token = request.args.get("")
     return render_template('reset_password.html',form=form)
 """
 sampleuser = {'username':'Shankar'}
