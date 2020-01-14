@@ -2,8 +2,8 @@ from flask import render_template
 from flask import Response
 from flask import redirect
 from flask import flash,url_for
-from .app import app
-from .forms import LoginForm,RegisterForm,ResetPasswordForm
+from .bp import app
+from .forms import LoginForm,RegisterForm
 from .models import User
 from flask_login import login_user
 from flask_login import logout_user
@@ -53,18 +53,8 @@ def register():
             login_user(u, remember=False)
         return redirect(url_for('home_page'))
     return render_template('register.html',form=form)
-
-
-@app.route('/forgotpassword')
-def reset_password():
-    form = ForgotPassword()
-    return render_template('forgot_password.html',form=form)
-
-@app.route('/passwordreset')
-def reset_password():
-    form = ResetPasswordForm()
-    
-    return render_template('reset_password.html',form=form)
+            
+        
 """
 sampleuser = {'username':'Shankar'}
 posts = [
