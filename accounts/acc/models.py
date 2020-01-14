@@ -51,11 +51,8 @@ class User(UserMixin,db.Model):
         isvalid =  (token != self.last_reset_password_token) and (token == self.valid_reset_password_token) 
         if not isvalid:
             return "NV"
-        try :
-            decoded = jwt.decode(token,app.config['SECRET_KEY'],algorithms=['HS256'])
-            return decoded['username']
-        except Exception as e:
-            return "NV"
+        else:
+            return "V"
 @login.user_loader
 def load_user(username):
     return User.query.get(username)

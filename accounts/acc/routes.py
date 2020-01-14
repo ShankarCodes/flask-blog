@@ -9,6 +9,8 @@ from .models import User
 from flask_login import login_user
 from flask_login import logout_user
 from flask_login import current_user
+import jwt
+
 @app.route('/')
 @app.route('/index')
 def home_page():
@@ -70,7 +72,21 @@ def forgot_password():
 @app.route('/forgotpassword/passwordreset')
 def reset_password():
     form = ResetPasswordForm()
-    token = request.args.get("")
+    token = request.args.get("token")
+    if token is None :
+        return render_template('invalid_reset_password.html',msg="No Token")
+    else:
+        decoded = jwt.decode(token,app.config['SECRET_KEY'],algorithms=['HS256'])
+        usr = User.query.get(decoded['username'])
+        su = usr.check_password_reset_token(token)
+        
+        if su == 'NV':
+            return render_template('invalid_reset_password.html',msg="Verififcation failed")
+        else:
+            if form.validate_on_submit():
+                usr.set_password(form.password.data)
+                return "SUCESS"
+    
     return render_template('reset_password.html',form=form)
 """
 sampleuser = {'username':'Shankar'}
