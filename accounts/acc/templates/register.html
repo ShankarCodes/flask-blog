@@ -1,6 +1,13 @@
 {%extends 'base.html'%}
+{% for field in form.errors %}
+{% for error in form.errors[field] %}
+    <div class="alert alert-error">
+        <strong>Error!</strong> {{error}}
+    </div>
+{% endfor %}
+{% endfor %}
 {%block content%}
-<h1>Sign In</h1>
+<h1>Sign Up</h1>
 <form action='' method="post" class='form form-group ' >
     {{form.hidden_tag()}}
     <p>
@@ -13,7 +20,7 @@
     </p>
     <p>
         {{form.password.label}}<br>
-        {{form.password(size=32,class_='form-control form-field')}}
+        {{form.password(size=64,class_='form-control form-field')}}
     </p>
     <p>
         <p>{{ form.register(class='btn btn-primary') }}</p>

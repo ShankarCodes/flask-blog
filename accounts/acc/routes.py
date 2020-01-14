@@ -38,6 +38,7 @@ def register():
     form = RegisterForm()
     if current_user.is_authenticated:
         return redirect(url_for('home_page'))
+    print(form.errors)
     if form.validate_on_submit():
         user = User.query.get(form.username.data)
         u2 = User.query.filter_by(email=form.email.data).first()
@@ -77,14 +78,16 @@ def reset_password():
     if token is None :
         return render_template('invalid_reset_password.html',msg="No Token")
     else:
-        decoded = jwt.decode(token,app.config['SECRET_KEY'],algorithms=['HS256'])
-        print(decoded)
+        try:
+            decoded = jwt.decode(token,app.config['SECRET_KEY'],algorithms=['HS256'])
+        except:
+            return render_template('invalid_reset_password.html',msg="Invalid Token")
         usr = User.query.get(decoded['username'])
         print(usr)
         su = usr.check_password_reset_token(token)
         usr.save()
         if su == 'NV':
-            return render_template('invalid_reset_password.html',msg="Verififcation failed")
+            return render_template('invalid_reset_password.html',msg="Verifcation failed")
         else:
             if form.validate_on_submit():
                 usr.set_password(form.password.data)

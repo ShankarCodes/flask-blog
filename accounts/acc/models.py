@@ -48,12 +48,9 @@ class User(UserMixin,db.Model):
         token = token.decode('utf-8')
         self.valid_reset_password_token = token
         return token
-        
+
     def check_password_reset_token(self,token):
         isvalid =  (token != self.last_reset_password_token) and (token == self.valid_reset_password_token) 
-        print(f"LRT:{self.last_reset_password_token}")
-        print(f"VRT:{self.valid_reset_password_token}")
-        print(f"TKN:{token}")
         if not isvalid:
             return "NV"
         else:
