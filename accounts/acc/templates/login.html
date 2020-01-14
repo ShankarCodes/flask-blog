@@ -17,4 +17,7 @@
         <p>{{ form.submit(class='btn btn-primary') }}</p>
     </p>
 </form>
+<center><small class='text text-muted'><a href="{{url_for('forgot_password')}}">Forgot Password?</a></small></center>
+<center><small class='text text-muted'>Don't have an account?</small></center>
+<center><small class='text text-muted'><a href="{{url_for('register')}}">Create one now</a></small></center>
 {%endblock%}

@@ -6,10 +6,32 @@ from flask import request
 from .app import app
 from .forms import LoginForm,RegisterForm,ResetPasswordForm,ForgotPasswordForm
 from .models import User
+from .mail import sendmail
 from flask_login import login_user
 from flask_login import logout_user
 from flask_login import current_user
 import jwt
+from jinja2 import Template
+
+tpl = Template('''<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<h1>Hi {{username}}</h1>
+<p>We have recieved a request to change the password for your account</p>
+<p>If you had requested for a password reset,please click <a href={{reset_url}}>here</a></p>
+<p>Or copy and paste this link {{reset_url}} in your browser</p>
+<p><strong>Note:This url will only be valid for 3 hours</strong></p>
+<p>If you had not requested for a password change,you can safely ignore this email</p>
+            ''')
+
 
 @app.route('/')
 @app.route('/index')
@@ -67,11 +89,14 @@ def forgot_password():
         if usr is not  None:
             token = usr.get_password_reset_token(60)
             usr.save()
-            print(f"{request.base_url}/passwordreset?token={token}")
+            url = f"{request.base_url}/passwordreset?token={token}"
+            resp = tpl.render(username=usr.username,reset_url=url)
+            print(resp)
+            sendmail('shankar-login.com',usr.email,'Request for password reset for your account',resp)
         return render_template('mail_sent_forgot_password.html')
     return render_template('forgot_password.html',form=form)
 
-@app.route('/forgotpassword/passwordreset')
+@app.route('/forgotpassword/passwordreset',methods=['GET','POST'])
 def reset_password():
     form = ResetPasswordForm()
     token = request.args.get("token")
@@ -85,6 +110,7 @@ def reset_password():
         usr = User.query.get(decoded['username'])
         print(usr)
         su = usr.check_password_reset_token(token)
+        usr.last_reset_password_token = token
         usr.save()
         if su == 'NV':
             return render_template('invalid_reset_password.html',msg="Verifcation failed")
