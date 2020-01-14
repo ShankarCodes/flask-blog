@@ -65,7 +65,8 @@ def forgot_password():
         usr = User.query.get(form.username.data)
         if usr is not  None:
             token = usr.get_password_reset_token(60)
-            print(f"{request.base_url}/passwordreset?token={token.decode('utf-8')}")
+            usr.save()
+            print(f"{request.base_url}/passwordreset?token={token}")
         return render_template('mail_sent_forgot_password.html')
     return render_template('forgot_password.html',form=form)
 
@@ -77,14 +78,17 @@ def reset_password():
         return render_template('invalid_reset_password.html',msg="No Token")
     else:
         decoded = jwt.decode(token,app.config['SECRET_KEY'],algorithms=['HS256'])
+        print(decoded)
         usr = User.query.get(decoded['username'])
+        print(usr)
         su = usr.check_password_reset_token(token)
-        
+        usr.save()
         if su == 'NV':
             return render_template('invalid_reset_password.html',msg="Verififcation failed")
         else:
             if form.validate_on_submit():
                 usr.set_password(form.password.data)
+                usr.save()
                 return "SUCESS"
     
     return render_template('reset_password.html',form=form)
