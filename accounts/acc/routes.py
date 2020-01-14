@@ -3,7 +3,7 @@ from flask import Response
 from flask import redirect
 from flask import flash,url_for
 from .app import app
-from .forms import LoginForm,RegisterForm,ResetPasswordForm
+from .forms import LoginForm,RegisterForm,ResetPasswordForm,ForgotPasswordForm
 from .models import User
 from flask_login import login_user
 from flask_login import logout_user
@@ -55,9 +55,11 @@ def register():
     return render_template('register.html',form=form)
 
 
-@app.route('/forgotpassword')
-def reset_password():
-    form = ForgotPassword()
+@app.route('/forgotpassword',methods=['POST','GET'])
+def forgot_password():
+    form = ForgotPasswordForm()
+    if form.validate_on_submit():
+        return render_template('mail_sent_forgot_password.html')
     return render_template('forgot_password.html',form=form)
 
 @app.route('/passwordreset')

@@ -19,3 +19,7 @@ class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password',validators=[DataRequired()])
     cpassword = PasswordField('Confirm Password',validators=[DataRequired()])
     reset = SubmitField('Reset')
+
+class ForgotPasswordForm(FlaskForm):
+    username = StringField('Username',validators=[DataRequired()])
+    ok = SubmitField('OK')
