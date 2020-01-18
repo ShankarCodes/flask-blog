@@ -1,5 +1,0 @@
-FLASK_APP=app.py
-FLASK_ENV=PRODUCTION
-FLASK_DEBUG=1
-API_KEY = myapitests
-NEW_KEY = n
