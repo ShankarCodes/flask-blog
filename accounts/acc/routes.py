@@ -26,7 +26,8 @@ tpl = Template('''<link rel="stylesheet" href="https://stackpath.bootstrapcdn.co
         crossorigin="anonymous"></script>
 <h1>Hi {{username}}</h1>
 <p>We have recieved a request to change the password for your account</p>
-<p>If you had requested for a password reset,please click <a href={{reset_url}}>here</a></p>
+<p>If you had requested for a password reset,please click 
+<a class="btn btn-primary" href={{reset_url}}>Reset Password</a></p>
 <p>Or copy and paste this link {{reset_url}} in your browser</p>
 <p><strong>Note:This url will only be valid for 3 hours</strong></p>
 <p>If you had not requested for a password change,you can safely ignore this email</p>
@@ -91,8 +92,8 @@ def forgot_password():
             usr.save()
             url = f"{request.base_url}/passwordreset?token={token}"
             resp = tpl.render(username=usr.username,reset_url=url)
-            print(resp)
-            sendmail('shankar-login.com',usr.email,'Request for password reset for your account',resp)
+            
+            sendmail('ShankarSupport@shankar-login.herokuapp.com',usr.email,'Request for password reset for your account',resp)
         return render_template('mail_sent_forgot_password.html')
     return render_template('forgot_password.html',form=form)
 
@@ -116,6 +117,7 @@ def reset_password():
         else:
             if form.validate_on_submit():
                 usr.set_password(form.password.data)
+                usr.last_reset_password_token = token
                 usr.save()
                 return "SUCESS"
     

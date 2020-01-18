@@ -9,7 +9,7 @@ def sendmail(fr,to,sub,cnt):
         subject=sub,
         html_content=cnt)
     try:
-        sg = SendGridAPIClient('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')
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
         response = sg.send(message)
         print(response.status_code)
         print(response.body)
