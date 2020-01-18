@@ -2,3 +2,4 @@
 /.vscode
 /accounts/.flaskenv
 .flaskenv
+/.flaskenv

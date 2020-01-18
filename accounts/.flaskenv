@@ -1,4 +1,4 @@
 FLASK_APP=app.py
 FLASK_ENV=PRODUCTION
 FLASK_DEBUG=1
-API_KEY = myapitest
+API_KEY = myapitests
