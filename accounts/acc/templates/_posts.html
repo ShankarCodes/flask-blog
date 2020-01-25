@@ -1,0 +1,8 @@
+{%macro show_post(post)%}
+<h3>{{post.title}}</h3>
+<p>{{post.body[:20]}}....<a href="{{url_for('post_page',id=post.id)}}">read more</a></p>
+<hr style='height: 1px;
+    color: black;
+    background-color: black;
+    border: none;'>
+{%endmacro%}
