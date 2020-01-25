@@ -2,8 +2,17 @@
 {% import '_posts.html' as _post%}
 <title>{{user.username}}</title>
 {%block content%}
+<div>
 <h1>{{user.username}}'s Profile Page</h1>
+<img src ="{{user.get_avatar_url(150)}}" class="rounded float-left" style="text-align:right;"></img>
+Last Online:<br>
+{%if current_user.username==user.username%}
+Email:{{user.email}}<br><small class="text-muted">Email Address Visible only to you</small>
+{%endif%}
+</div>
+<br><br><br><br><br>
 <h1>Posts</h1>
+
 {%if posts%}
 {%for post in posts%}
 {{_post.show_post(post)}}

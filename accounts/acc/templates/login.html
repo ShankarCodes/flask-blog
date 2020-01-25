@@ -1,7 +1,8 @@
 {%extends 'base.html'%}
 {%block content%}
 <h1 style="text-align:center;">Sign In</h1>
-<form action='' method="post" class='form form-group ' style="margin: 0 auto;width:350px;">
+<form action='' method="post" class='form form-group ' style="margin: 0 auto;width:350px;" id="loginform">
+  <fieldset id="loginform">
     {{form.hidden_tag()}}
     <p>
         {{form.username.label}}<br>
@@ -16,6 +17,7 @@
         <p>{{ form.remember_me(class_='form-checkbox-inline') }} {{ form.remember_me.label }}</p>
         <p>{{ form.submit(class='btn btn-primary') }}</p>
     </p>
+      </fieldset>
 </form>
 <center><small class='text text-muted'><a href="{{url_for('forgot_password')}}">Forgot Password?</a></small></center>
 <center><small class='text text-muted'>Don't have an account?</small></center>

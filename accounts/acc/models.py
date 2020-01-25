@@ -5,6 +5,7 @@ from .app import app
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 import jwt
+import hashlib
 
 class User(UserMixin,db.Model):
     __tablename__ = "user"
@@ -56,7 +57,9 @@ class User(UserMixin,db.Model):
             return "NV"
         else:
             return "V"
-
+    def get_avatar_url(self,size):
+        usrhsh = hashlib.md5(bytes(self.username,'utf-8')).hexdigest()
+        return f"https://www.gravatar.com/avatar/{usrhsh}?d=identicon&s={size}"
 class Post(db.Model):
     id = db.Column(db.Integer,primary_key = True,index = True)
     pub_date = db.Column(db.DateTime,index = True,default = datetime.utcnow )
