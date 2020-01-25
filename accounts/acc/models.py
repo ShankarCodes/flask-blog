@@ -9,11 +9,12 @@ import jwt
 class User(UserMixin,db.Model):
     __tablename__ = "user"
     
-    username = db.Column(db.String(64),index=True,unique=True,primary_key=True)
-    email = db.Column(db.String(200),index=True,unique=True)
+    username = db.Column(db.String(64),index=True,unique=True,primary_key=True,nullable=False)
+    email = db.Column(db.String(200),index=True,unique=True,nullable=False)
     password_hash = db.Column(db.String(128))
     last_reset_password_token = db.Column(db.String())
     valid_reset_password_token = db.Column(db.String())
+    posts = db.relationship('Post', backref='author', lazy=True)
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -55,6 +56,24 @@ class User(UserMixin,db.Model):
             return "NV"
         else:
             return "V"
+
+class Post(db.Model):
+    id = db.Column(db.Integer,primary_key = True,index = True)
+    pub_date = db.Column(db.DateTime,index = True,default = datetime.utcnow )
+    
+    title = db.Column(db.String(150),nullable = False)
+    body = db.Column(db.String,nullable = False)    
+    writer = db.Column(db.String,db.ForeignKey('user.username'),nullable=False)
+    
+    def __repr__(self):
+        return f'<Post title={self.title} author={self.writer}'
+    def save(self):
+        try:
+            db.session.add(self)
+            db.session.commit()        
+        except Exception as e:
+            print(e)
+            db.session.rollback()
 @login.user_loader
 def load_user(username):
     return User.query.get(username)

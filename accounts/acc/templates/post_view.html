@@ -1,0 +1,10 @@
+{%extends 'base.html'%}
+<title>{{post.title}}</title>
+{%block content%}
+<h2>{{post.title}}</h2>
+<h5>By <a href="{{url_for('user_page',username=post.writer)}}">{{post.writer}}</a></h5>
+<br>
+<br>
+<p>{{post.body}}</p>
+
+{%endblock%}

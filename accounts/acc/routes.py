@@ -1,15 +1,16 @@
 from flask import render_template
 from flask import Response
-from flask import redirect
+from flask import redirect,abort
 from flask import flash,url_for
 from flask import request
 from .app import app
 from .forms import LoginForm,RegisterForm,ResetPasswordForm,ForgotPasswordForm
-from .models import User
+from .models import User,Post
 from .mail import sendmail
 from flask_login import login_user
 from flask_login import logout_user
 from flask_login import current_user
+from flask_login import login_required
 import jwt
 from jinja2 import Template
 
@@ -113,7 +114,7 @@ def reset_password():
         su = usr.check_password_reset_token(token)
         usr.save()
         if su == 'NV':
-            return render_template('invalid_reset_password.html',msg="Verifcation failed")
+            return render_template('invalid_reset_password.html',msg="Invalid Token")
         else:
             if form.validate_on_submit():
                 usr.set_password(form.password.data)
@@ -122,6 +123,28 @@ def reset_password():
                 return "SUCESS"
     
     return render_template('reset_password.html',form=form)
+
+@app.route('/user/<username>')
+def user_page(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = Post.query.filter_by(author=user).all()
+    return render_template('user_page.html',user=user,posts=posts)
+
+@app.route('/user/')
+def user():
+    if current_user.is_authenticated:
+        return redirect(url_for('user_page',username=current_user.username))
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/post/<int:id>')
+def post_page(id):
+    post = Post.query.get(id)
+    if post is None:
+        abort(404)
+    else:
+        return render_template('post_view.html',post=post)
+
 """
 sampleuser = {'username':'Shankar'}
 posts = [
