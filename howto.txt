@@ -1,0 +1,3 @@
+using ppa deadsnakes
+ virtualenv -p 3.7 venv
+source venv/bin/activate
