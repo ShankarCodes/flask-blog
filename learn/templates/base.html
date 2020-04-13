@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+
+  <head>
+    {%if title%}
+    <title>{{title}}</title>
+    {%else%}
+    <title>Shankar Flask</title>
+    {%endif%}
+    <meta charset="utf-8">
+    <meta name="description" content={{description}}>
+    
+  </head>
+
+  <body>
+    <nav>
+    {%include "_nav.html"%}
+    <div class="container">
+    {%if title%}
+    <h1>{{title}}</h1>
+    {%else%}
+    <h1>Shankar Flask Title Here!</h1>
+    {%endif%}
+    
+    {%if description%}
+    <p>{{description}}</p>
+    {%else%}
+    <p>Shankar Flask Description Here!</p>
+    {%endif%}
+    {%block content%}
+    {%endblock%}
+    </div>
+  </body>
+
+</html>
